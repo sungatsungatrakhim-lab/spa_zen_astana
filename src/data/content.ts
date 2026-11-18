@@ -36,7 +36,7 @@ export const SERVICES = [
   { title: 'Уход за лицом', img: facials, width: 360 },
   { title: 'Классический массаж', img: swedish, width: 359 },
   // Третья карточка в макете обрезана краем фрейма — доступна только видимая часть (183px)
-  { title: 'Скрабы для тела', img: bodyScrubs, width: 359, partial: true },
+  { title: 'Скрабы для тела', img: bodyScrubs, width: 359 },
 ]
 
 export type Plan = { name: string; text: string; benefits: string[]; price: string }

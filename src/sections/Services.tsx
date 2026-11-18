@@ -31,14 +31,15 @@ export default function Services() {
       <IconButton icon={canNext ? arrowRight : arrowLeftMuted} label="Следующая услуга" disabled={!canNext}
         className={canNext ? '' : 'rotate-180'} onClick={() => setShift((s) => Math.min(MAX_SHIFT, s + STEP))} style={at(130.6, 2411.5, TOP)} />
 
-      <ul className="relative h-[530px] w-[1131px] transition-transform duration-500 ease-[cubic-bezier(.2,.7,.2,1)]"
-        style={at(TRACK_X, 1988.8, TOP, { transform: `translateX(${-shift}px)` })}>
+      {/* Карточки уходят за левую границу карусели (x = 485), а не наезжают на заголовок */}
+      <ul className="relative h-[530px] w-[1131px] transition-[transform,clip-path] duration-500 ease-[cubic-bezier(.2,.7,.2,1)]"
+        style={at(TRACK_X, 1988.8, TOP, { transform: `translateX(${-shift}px)`, clipPath: `inset(0 0 0 ${shift}px)` })}>
         {SERVICES.map((s, i) => (
           <li key={s.title} style={{ width: s.width, left: CARD_X[i] - TRACK_X }} className="group absolute top-0">
             <a href="#booking" data-book={CARD_TO_SERVICE[s.title] ?? ''} className="block">
               <div className="h-[480px] overflow-hidden bg-neutral-300">
-                <img src={s.img} alt={s.title} height={480} className="h-[480px] max-w-none object-cover object-left transition-transform duration-700 group-hover:scale-[1.03]"
-                  style={{ width: s.partial ? 183 : s.width }} />
+                <img src={s.img} alt={s.title} height={480} className="h-[480px] max-w-none object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                  style={{ width: s.width }} />
               </div>
               <p className="mt-[17px] display-6 text-neutral-800">{s.title}</p>
             </a>
