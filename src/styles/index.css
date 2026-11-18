@@ -725,3 +725,26 @@ textarea.bk-field {
   background: var(--color-neutral-800);
   color: #fff;
 }
+
+/* ================= Закреплённая шапка ================= */
+.pinned-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: color-mix(in oklab, var(--color-neutral-200) 88%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 10px 30px -18px rgba(38, 31, 23, 0.35);
+  transform: translateY(-110%);
+  transition: transform 0.5s var(--ease-soft);
+}
+.pinned-header.on {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pinned-header {
+    transition: none;
+  }
+}

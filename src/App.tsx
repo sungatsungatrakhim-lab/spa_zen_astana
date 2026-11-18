@@ -39,6 +39,26 @@ export default function App() {
 
   const done = useCallback(() => setStarted(true), [])
 
+  // Закреплённая шапка: появляется, когда обычная шапка (в первой карточке) уходит за верх экрана
+  const [pinned, setPinned] = useState(false)
+  useEffect(() => {
+    // Карточки «липкие», поэтому считаем по прокрутке: сайт начинается там, где кончается интро
+    const on = () => {
+      const intro = document.getElementById('intro')
+      if (!intro) return
+      const siteTop = intro.offsetHeight - window.innerHeight
+      const headerH = 81 * Math.min(1, window.innerWidth / 1440)
+      setPinned(window.scrollY > siteTop + headerH)
+    }
+    on()
+    window.addEventListener('scroll', on, { passive: true })
+    window.addEventListener('resize', on)
+    return () => {
+      window.removeEventListener('scroll', on)
+      window.removeEventListener('resize', on)
+    }
+  }, [])
+
   // Онлайн-запись: любая кнопка с data-book открывает окно (значение — услуга или тариф для предвыбора)
   const [booking, setBooking] = useState<{ open: boolean; service: string | null; n: number }>({ open: false, service: null, n: 0 })
   const closeBooking = useCallback(() => setBooking((b) => ({ ...b, open: false })), [])
@@ -59,6 +79,11 @@ export default function App() {
     <>
       <Preloader ready={fontsReady} onDone={done} />
       <Cursor />
+      <div className={`pinned-header ${pinned ? 'on' : ''}`} aria-hidden={!pinned} inert={!pinned || undefined}>
+        <div className="min-w-[1440px]" style={{ zoom: scale }}>
+          <Header />
+        </div>
+      </div>
       {booking.open && <BookingModal key={booking.n} initialService={booking.service} onClose={closeBooking} />}
       <IntroStage started={started} />
       {/* На экранах уже 1440px весь холст пропорционально уменьшается (мобильной версии в макете нет) */}
