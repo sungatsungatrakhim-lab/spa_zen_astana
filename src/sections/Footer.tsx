@@ -1,5 +1,7 @@
-import { useState, type FormEvent } from 'react'
+import { ButtonLink } from '../components/ui'
 import { PAGES } from '../data/content'
+import ctaBath from '../assets/img/cta-bath.webp'
+import ctaInstagram from '../assets/img/cta-instagram.webp'
 import logoLg from '../assets/icons/logo-lg.png'
 import fb from '../assets/icons/social-facebook.png'
 import ig from '../assets/icons/social-instagram.png'
@@ -8,7 +10,6 @@ import yt from '../assets/icons/social-youtube.png'
 
 // Footer V1: высота 984.535, координаты — от верха футера (y страницы 8429)
 const H = 984.535
-const CUT = 378 // высота удалённого верхнего блока «Спокойствие в руках опытных мастеров»
 const ROW = 42 // шаг строк в колонках ссылок
 
 const COLS = [
@@ -26,20 +27,28 @@ const SOCIAL = [
 
 export default function Footer() {
   return (
-    <footer id="contacts" className="relative overflow-hidden bg-secondary-100" style={{ height: H - CUT }}>
-      {/* Верхний CTA-блок удалён: содержимое сдвинуто вверх на CUT, координаты остальных элементов прежние */}
-      <div data-sec className="relative mx-auto w-[1440px]" style={{ height: H, marginTop: -CUT, marginBottom: 0 }}>
+    <footer id="contacts" className="relative overflow-hidden bg-secondary-100">
+      {/* Линия на 38.5% высоты — на всю ширину */}
+      <div aria-hidden className="absolute left-0 h-px w-full bg-neutral-500" style={{ top: 378 }} />
+      <div data-sec className="relative mx-auto w-[1440px]" style={{ height: H }}>
         {/* Блок логотипа: Neutrals/300, слева от вертикальной линии, до левого края экрана */}
         <div aria-hidden className="absolute bottom-0 right-[815px] w-[3000px] bg-neutral-300" style={{ top: 813.4 }} />
         <div aria-hidden className="absolute bottom-0 w-px bg-neutral-500" style={{ left: 624.5, top: 378.3 }} />
 
-        {/* Подписка */}
-        <h3 className="absolute display-7 whitespace-nowrap text-neutral-800" style={{ left: 75, top: 484 }}>Подпишитесь на рассылку</h3>
-        <p className="absolute paragraph-lg w-[476px] text-neutral-700" style={{ left: 75, top: 541 }}>
-          Раз в месяц — советы мастеров, новые ритуалы и специальные предложения.
-        </p>
-        <Newsletter />
-        <ul className="absolute flex" style={{ left: 75, top: 686.9 }}>
+        {/* CTA */}
+        <img src={ctaBath} alt="Ванна для гидротерапии" width={223} height={223} className="absolute" style={{ left: 75, top: 77.8 }} />
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Zen в Instagram" className="absolute block transition-opacity hover:opacity-90" style={{ left: 330, top: 77.8 }}>
+          <img src={ctaInstagram} alt="" width={223} height={223} />
+        </a>
+        <h2 className="absolute display-9 w-[700.7px] text-neutral-800" style={{ left: 664.7, top: 85.6 }}>
+          Спокойствие в руках опытных мастеров
+        </h2>
+        <ButtonLink href="#booking" data-book="" className="absolute" style={{ left: 664.7, top: 245.5 }}>Запись</ButtonLink>
+        <ButtonLink href="#services" variant="secondary" className="absolute" style={{ left: 802.7, top: 245.5 }}>Все услуги</ButtonLink>
+
+        {/* Блок рассылки удалён; соцсети подняты под заголовок, на одну линию с колонками ссылок */}
+        <p className="absolute display-2 text-neutral-800" style={{ left: 75, top: 432.4 }}>Мы в соцсетях</p>
+        <ul className="absolute flex" style={{ left: 75, top: 496 }}>
           {SOCIAL.map((s) => (
             <li key={s.label} className="absolute size-[20px]" style={{ left: s.x - 75 }}>
               <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} className="block transition-opacity hover:opacity-70">
@@ -88,33 +97,5 @@ export default function Footer() {
         </p>
       </div>
     </footer>
-  )
-}
-
-function Newsletter() {
-  const [email, setEmail] = useState('')
-  const [state, setState] = useState<'idle' | 'error' | 'done'>('idle')
-
-  const submit = (e: FormEvent) => {
-    e.preventDefault()
-    setState(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) ? 'done' : 'error')
-  }
-
-  return (
-    <form onSubmit={submit} noValidate className="absolute w-[376px]" style={{ left: 75, top: 614.6 }}>
-      <div className={`flex min-h-[48px] items-center justify-between rounded-[200px] border bg-transparent py-[8px] pr-[8px] pl-[16px] shadow-input transition-colors focus-within:border-neutral-600 ${state === 'error' ? 'border-accent' : 'border-neutral-400'}`}>
-        <label htmlFor="newsletter-email" className="sr-only">Электронная почта</label>
-        <input id="newsletter-email" type="email" autoComplete="email" placeholder="Ваш e-mail" value={email}
-          onChange={(e) => { setEmail(e.target.value); if (state !== 'idle') setState('idle') }}
-          className="min-w-0 flex-1 bg-transparent display-1 text-neutral-800 outline-none placeholder:text-neutral-700" />
-        <button type="submit" className="shrink-0 cursor-pointer rounded-[54px] bg-accent px-[16px] py-[8px] display-1-medium text-white transition-colors hover:bg-[#8a5640] active:scale-[0.98]">
-          Подписаться
-        </button>
-      </div>
-      <p role="status" aria-live="polite" className={`absolute top-[54px] left-[16px] display-1 ${state === 'error' ? 'text-accent' : 'text-neutral-700'}`}>
-        {state === 'error' && 'Введите корректный e-mail.'}
-        {state === 'done' && 'Спасибо за подписку!'}
-      </p>
-    </form>
   )
 }
