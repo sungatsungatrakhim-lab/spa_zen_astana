@@ -92,7 +92,7 @@ export default function Footer() {
 
         {/* Логотип */}
         <a href="#top" aria-label="Zen — наверх" className="absolute flex items-center gap-[14.476px]" style={{ left: 255.5, top: 874.8 }}>
-          <img src={logoLg} alt="" width={40} height={40} className="-m-[1.3px]" />
+          <img src={logoLg} alt="" width={37} height={38} />
           <span className="font-primary text-[32.571px] leading-[1.25] text-neutral-800">Zen</span>
         </a>
 

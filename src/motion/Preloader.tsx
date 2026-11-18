@@ -37,7 +37,7 @@ export default function Preloader({ ready, onDone }: { ready: boolean; onDone: (
   return (
     <div className={`zen-pre ${phase === 'out' ? 'out' : ''}`} role="status" aria-label="Загрузка">
       <div className="zen-pre-inner">
-        <img src={logoLg} alt="" width={56} height={56} />
+        <img src={logoLg} alt="" width={54} height={56} />
         <span className="zen-pre-word">Zen</span>
         <span className="zen-pre-line">
           <i />

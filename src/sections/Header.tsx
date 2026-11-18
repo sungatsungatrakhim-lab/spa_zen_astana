@@ -48,7 +48,7 @@ export default function Header() {
 
         {/* Logo Text/Color: иконка 23.3px + «Zen» 20.23px, gap 8.99px */}
         <a href="#top" aria-label="Zen — на главную" className="flex items-center gap-[8.99px]" style={at(657.4, 27.2, TOP)}>
-          <img src={logo} alt="" width={30} height={28} className="-ml-[3px] -my-[2px]" />
+          <img src={logo} alt="" width={23} height={24} />
           <span className="font-primary text-[20.229px] leading-[1.25] text-neutral-800 -ml-[3px]">Zen</span>
         </a>
 
