@@ -6,6 +6,7 @@ import arch1 from '../assets/img/arch-1.webp'
 import booking from '../assets/img/booking.webp'
 import about from '../assets/img/about.webp'
 import intro from '../assets/img/intro-arch.webp'
+import arch2 from '../assets/img/arch-2.webp'
 
 export type Cat = 'massage' | 'face' | 'body' | 'ritual'
 export type BookService = { id: string; title: string; duration: string; price: number; img: string; cat: Cat }
@@ -17,6 +18,7 @@ export const BOOK_SERVICES: BookService[] = [
   { id: 'facial', title: 'Уход за лицом', duration: '60 мин', price: 22000, img: facials, cat: 'face' },
   { id: 'mask', title: 'Глиняная маска и массаж лица', duration: '45 мин', price: 16000, img: arch1, cat: 'face' },
   { id: 'scrub', title: 'Скраб для тела', duration: '45 мин', price: 15000, img: scrub, cat: 'body' },
+  { id: 'aroma', title: 'Ароматерапия с массажем', duration: '60 мин', price: 20000, img: arch2, cat: 'massage' },
   { id: 'Silver', title: 'Ритуал Silver', duration: '90 мин', price: 45000, img: booking, cat: 'ritual' },
   { id: 'Gold', title: 'Ритуал Gold', duration: '2 часа', price: 75000, img: about, cat: 'ritual' },
   { id: 'Diamond', title: 'Ритуал Diamond', duration: 'весь день', price: 140000, img: intro, cat: 'ritual' },

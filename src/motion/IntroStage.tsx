@@ -11,7 +11,13 @@ import { reduced } from './motion'
   Сцена — sticky внутри высокого контейнера; всё считается от прогресса прокрутки этого контейнера.
 */
 
-const SERVICES = ['Массаж', 'Уход за лицом', 'Скрабы', 'Ароматерапия']
+// Пункты сверху — кнопки: открывают онлайн-запись с выбранной услугой
+const SERVICES = [
+  { label: 'Массаж', id: 'classic' },
+  { label: 'Уход за лицом', id: 'facial' },
+  { label: 'Скрабы', id: 'scrub' },
+  { label: 'Ароматерапия', id: 'aroma' },
+]
 
 export default function IntroStage({ started }: { started: boolean }) {
   const wrap = useRef<HTMLDivElement>(null)
@@ -52,9 +58,9 @@ export default function IntroStage({ started }: { started: boolean }) {
         <div className="intro-inner">
           <div className="intro-top">
             {SERVICES.map((s, i) => (
-              <span key={s} style={{ '--i': i } as CSSProperties}>
-                {s}
-              </span>
+              <button key={s.id} type="button" data-book={s.id} style={{ '--i': i } as CSSProperties}>
+                {s.label}
+              </button>
             ))}
           </div>
 
@@ -85,7 +91,7 @@ export default function IntroStage({ started }: { started: boolean }) {
               <a href="#booking" data-book="" className="intro-btn">
                 Записаться <b>→</b>
               </a>
-              <span className="intro-badge" aria-hidden>
+              <a href="#about" className="intro-badge" aria-label="Листать вниз к сайту">
                 <svg viewBox="0 0 100 100">
                   <defs>
                     <path id="badge-c" d="M50,50 m-36,0 a36,36 0 1,1 72,0 a36,36 0 1,1 -72,0" />
@@ -95,7 +101,7 @@ export default function IntroStage({ started }: { started: boolean }) {
                   </text>
                 </svg>
                 <em>Zen</em>
-              </span>
+              </a>
             </div>
           </div>
         </div>

@@ -303,15 +303,50 @@ html.lenis body {
   text-transform: uppercase;
   color: var(--color-neutral-500);
 }
-.intro-top span {
+.intro-top button {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 6px 0;
+  cursor: pointer;
+  position: relative;
   opacity: 0;
   transform: translateY(-10px);
   transition: 0.9s var(--ease-soft);
   transition-delay: calc(900ms + var(--i) * 90ms);
 }
-.go .intro-top span {
+.go .intro-top button {
   opacity: 1;
   transform: none;
+}
+.intro-top button::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 100%;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease-soft);
+}
+.intro-top button:hover {
+  color: #efe5da;
+}
+.intro-top button:hover::after,
+.intro-top button:focus-visible::after {
+  transform: scaleX(1);
+}
+.intro-badge {
+  cursor: pointer;
+  transition: transform 0.4s var(--ease-soft);
+}
+.intro-badge:hover {
+  transform: scale(1.08);
 }
 .intro-scene {
   position: relative;
@@ -515,7 +550,7 @@ html.lenis body {
   pointer-events: none;
 }
 @media (max-width: 760px) {
-  .intro-top span:nth-child(n + 3) {
+  .intro-top button:nth-child(n + 3) {
     display: none;
   }
   .intro-scene {
