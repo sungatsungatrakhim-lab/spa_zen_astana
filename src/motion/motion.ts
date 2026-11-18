@@ -27,17 +27,37 @@ export function initSmoothScroll() {
     if (!a || !lenis) return
     const id = a.getAttribute('href')!
     if (id === '#' || id.length < 2) return
-    const el = document.querySelector(id)
+    const el = document.querySelector<HTMLElement>(id)
     if (!el) return
     e.preventDefault()
-    lenis.scrollTo(el as HTMLElement, { offset: 0 })
+    lenis.scrollTo(flowTop(el))
   })
   return lenis
 }
 
+/*
+  Секции лежат в «липких» карточках, поэтому getBoundingClientRect даёт их прилипшее положение,
+  а не место в потоке страницы — прокрутка к ним «не срабатывала». Считаем позицию сами:
+  начало сайта (конец интро) + высоты карточек до нужной + смещение элемента внутри своей карточки.
+*/
+export function flowTop(el: HTMLElement) {
+  const card = el.closest<HTMLElement>('[data-card]')
+  if (!card) return el.getBoundingClientRect().top + window.scrollY
+  const intro = document.getElementById('intro')
+  const siteTop = intro ? intro.offsetHeight - window.innerHeight : 0
+  const zoom = Math.min(1, window.innerWidth / 1440)
+  let y = siteTop
+  for (const c of document.querySelectorAll<HTMLElement>('[data-card]')) {
+    if (c === card) break
+    y += c.offsetHeight * zoom
+  }
+  const inside = el === card ? 0 : el.getBoundingClientRect().top - card.getBoundingClientRect().top
+  return Math.max(0, Math.round(y + inside))
+}
+
 export function scrollToEl(el: Element | null) {
   if (!el) return
-  if (lenis) lenis.scrollTo(el as HTMLElement)
+  if (lenis) lenis.scrollTo(flowTop(el as HTMLElement))
   else el.scrollIntoView({ behavior: reduced() ? 'auto' : 'smooth' })
 }
 
