@@ -1,8 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { ButtonLink } from '../components/ui'
 import { PAGES } from '../data/content'
-import ctaBath from '../assets/img/cta-bath.webp'
-import ctaInstagram from '../assets/img/cta-instagram.webp'
 import logoLg from '../assets/icons/logo-lg.png'
 import fb from '../assets/icons/social-facebook.png'
 import ig from '../assets/icons/social-instagram.png'
@@ -11,6 +8,7 @@ import yt from '../assets/icons/social-youtube.png'
 
 // Footer V1: высота 984.535, координаты — от верха футера (y страницы 8429)
 const H = 984.535
+const CUT = 378 // высота удалённого верхнего блока «Спокойствие в руках опытных мастеров»
 const ROW = 42 // шаг строк в колонках ссылок
 
 const COLS = [
@@ -28,24 +26,12 @@ const SOCIAL = [
 
 export default function Footer() {
   return (
-    <footer id="contacts" className="relative overflow-hidden bg-secondary-100">
-      {/* Линия на 38.5% высоты — на всю ширину */}
-      <div aria-hidden className="absolute left-0 h-px w-full bg-neutral-500" style={{ top: 378 }} />
-      <div data-sec className="relative mx-auto w-[1440px]" style={{ height: H }}>
+    <footer id="contacts" className="relative overflow-hidden bg-secondary-100" style={{ height: H - CUT }}>
+      {/* Верхний CTA-блок удалён: содержимое сдвинуто вверх на CUT, координаты остальных элементов прежние */}
+      <div data-sec className="relative mx-auto w-[1440px]" style={{ height: H, marginTop: -CUT, marginBottom: 0 }}>
         {/* Блок логотипа: Neutrals/300, слева от вертикальной линии, до левого края экрана */}
         <div aria-hidden className="absolute bottom-0 right-[815px] w-[3000px] bg-neutral-300" style={{ top: 813.4 }} />
         <div aria-hidden className="absolute bottom-0 w-px bg-neutral-500" style={{ left: 624.5, top: 378.3 }} />
-
-        {/* CTA */}
-        <img src={ctaBath} alt="Ванна для гидротерапии" width={223} height={223} className="absolute" style={{ left: 75, top: 77.8 }} />
-        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Zen в Instagram" className="absolute block transition-opacity hover:opacity-90" style={{ left: 330, top: 77.8 }}>
-          <img src={ctaInstagram} alt="" width={223} height={223} />
-        </a>
-        <h2 className="absolute display-9 w-[700.7px] text-neutral-800" style={{ left: 664.7, top: 85.6 }}>
-          Спокойствие в руках опытных мастеров
-        </h2>
-        <ButtonLink href="#booking" data-book="" className="absolute" style={{ left: 664.7, top: 245.5 }}>Запись</ButtonLink>
-        <ButtonLink href="#services" variant="secondary" className="absolute" style={{ left: 802.7, top: 245.5 }}>Все услуги</ButtonLink>
 
         {/* Подписка */}
         <h3 className="absolute display-7 whitespace-nowrap text-neutral-800" style={{ left: 75, top: 484 }}>Подпишитесь на рассылку</h3>
