@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { useEffect, useRef, useState } from 'react'
 import photo from '../assets/img/intro-arch.webp'
-import { reduced } from './motion'
+import { onScrollFrame, reduced } from './motion'
 
 /*
   Тёмный первый экран (как в референсе):
@@ -31,25 +31,22 @@ export default function IntroStage({ started }: { started: boolean }) {
 
   useEffect(() => {
     if (reduced()) return
-    let raf = 0
-    const tick = () => {
+    let lz = -1,
+      lo = -1
+    return onScrollFrame(() => {
       const w = wrap.current,
         s = stage.current
-      if (w && s) {
-        const r = w.getBoundingClientRect()
-        const vh = window.innerHeight
-        const total = r.height - vh // сколько прокручивается контейнер
-        const y = Math.min(Math.max(-r.top, 0), total)
-        // 0…1 — наезд (первые 55% пути), 0…1 — уход под сайт (оставшийся путь = один экран)
-        const zoom = Math.min(y / (total - vh || 1), 1)
-        const out = Math.min(Math.max((y - (total - vh)) / vh, 0), 1)
-        s.style.setProperty('--zoom', zoom.toFixed(4))
-        s.style.setProperty('--out', out.toFixed(4))
-      }
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+      if (!w || !s) return
+      const r = w.getBoundingClientRect()
+      const vh = s.offsetHeight
+      const total = r.height - vh
+      const y = Math.min(Math.max(-r.top, 0), total)
+      if (y > total + 2 && lo === 1) return
+      const zoom = Math.round(Math.min(y / (total - vh || 1), 1) * 400) / 400
+      const out = Math.round(Math.min(Math.max((y - (total - vh)) / vh, 0), 1) * 400) / 400
+      if (zoom !== lz) s.style.setProperty('--zoom', String((lz = zoom)))
+      if (out !== lo) s.style.setProperty('--out', String((lo = out)))
+    })
   }, [])
 
   return (

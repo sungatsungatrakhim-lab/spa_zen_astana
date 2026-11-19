@@ -10,6 +10,43 @@ import Lenis from 'lenis'
 
 export const reduced = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
+/*
+  Общий цикл прокрутки: эффекты (параллакс, стопка карточек, интро) пересчитываются один раз за кадр
+  и только когда страница действительно прокрутилась или изменился размер окна. Раньше каждый эффект
+  крутил свой requestAnimationFrame без остановки и перерисовывал страницу в каждом кадре — отсюда мерцание.
+*/
+type Fn = () => void
+const subs = new Set<Fn>()
+let queued = false
+const flush = () => {
+  queued = false
+  subs.forEach((f) => f())
+}
+export function requestScrollFrame() {
+  if (queued) return
+  queued = true
+  requestAnimationFrame(flush)
+}
+if (typeof window !== 'undefined') {
+  window.addEventListener('scroll', requestScrollFrame, { passive: true })
+  window.addEventListener('resize', requestScrollFrame)
+}
+export function onScrollFrame(fn: Fn) {
+  subs.add(fn)
+  requestScrollFrame()
+  return () => {
+    subs.delete(fn)
+  }
+}
+
+/** Высота экрана, на которой «стоит» сцена интро (svh на телефоне не прыгает вместе с адресной строкой). */
+export function siteStart() {
+  const intro = document.getElementById('intro')
+  const stage = intro?.querySelector<HTMLElement>('.intro-stage')
+  if (!intro) return 0
+  return intro.offsetHeight - (stage?.offsetHeight ?? window.innerHeight)
+}
+
 let lenis: Lenis | null = null
 export const getLenis = () => lenis
 
@@ -43,8 +80,7 @@ export function initSmoothScroll() {
 export function flowTop(el: HTMLElement) {
   const card = el.closest<HTMLElement>('[data-card]')
   if (!card) return el.getBoundingClientRect().top + window.scrollY
-  const intro = document.getElementById('intro')
-  const siteTop = intro ? intro.offsetHeight - window.innerHeight : 0
+  const siteTop = siteStart()
   const zoom = Math.min(1, window.innerWidth / 1440)
   let y = siteTop
   for (const c of document.querySelectorAll<HTMLElement>('[data-card]')) {
@@ -89,21 +125,20 @@ export function initReveals() {
 export function initParallax() {
   if (reduced()) return () => {}
   const els = [...document.querySelectorAll<HTMLElement>('[data-par]')]
-  let raf = 0
-  const tick = () => {
+  const last = new Map<HTMLElement, number>()
+  return onScrollFrame(() => {
     const vh = window.innerHeight
     for (const el of els) {
       const r = el.getBoundingClientRect()
       if (r.bottom < -200 || r.top > vh + 200) continue
       const k = parseFloat(el.dataset.par || '40')
-      // −1 … 1: положение центра элемента относительно центра экрана
       const t = (r.top + r.height / 2 - vh / 2) / vh
-      el.style.translate = `0 ${(-t * k).toFixed(1)}px`
+      const v = Math.round(-t * k * 2) / 2
+      if (last.get(el) === v) continue
+      last.set(el, v)
+      el.style.translate = `0 ${v}px`
     }
-    raf = requestAnimationFrame(tick)
-  }
-  raf = requestAnimationFrame(tick)
-  return () => cancelAnimationFrame(raf)
+  })
 }
 
 /** Размечает элементы секций для анимаций, не трогая вёрстку секций. */
